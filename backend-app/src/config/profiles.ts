@@ -11,6 +11,9 @@ export const Profiles = {
     openApi: {
       apiKey: process.env.OPENAI_API_KEY,
     },
+    panora: {
+      apiKey: process.env.PANORA_API_KEY,
+    },
   },
   production: {
     nodeEnv: process.env.NODE_ENV,
@@ -23,6 +26,9 @@ export const Profiles = {
     },
     openApi: {
       apiKey: process.env.OPENAI_API_KEY,
+    },
+    panora: {
+      apiKey: process.env.PANORA_API_KEY,
     },
   },
 };

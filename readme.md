@@ -24,9 +24,12 @@ JWT_EXPIRED_TIME=3600
 
 # OpenAI API Configuration
 OPENAI_API_KEY=your_openai_api_key
+
+# PANORA API KEY Configuration
+PANORA_API_KEY=your_panora_api_key
 ```
 
-Replace `your_jwt_secret_key` and `your_openai_api_key` with your actual secret key and API key.
+Replace `your_jwt_secret_key`, `your_openai_api_key` and `your_panora_api_key` with your actual secret key and API key.
 
 ## Running the Project
 
