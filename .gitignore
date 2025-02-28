@@ -1,0 +1,10 @@
+
+.nx
+
+# Next.js
+.next
+out
+.env
+dist
+node_modules
+tmp
