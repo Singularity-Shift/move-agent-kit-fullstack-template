@@ -2,7 +2,7 @@ export const Profiles = {
   development: {
     nodeEnv: process.env.NODE_ENV,
     server: {
-      port: process.env.PORT,
+      port: process.env.BACKEND_PORT,
     },
     jwt: {
       secret: process.env.JWT_SECRET_KEY,

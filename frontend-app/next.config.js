@@ -12,6 +12,11 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  env: {
+    API_BACKEND_URL: process.env.API_BACKEND_URL,
+    APTOS_NETWORK: process.env.APTOS_NETWORK,
+    PANORA_API_KEY: process.env.PANORA_API_KEY,
+  }
 };
 
 const plugins = [

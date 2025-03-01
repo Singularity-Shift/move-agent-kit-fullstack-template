@@ -1,3 +1,6 @@
+import { AgentProvider } from '../context/AgentProvider';
+import { AuthProvider } from '../context/AuthProvider';
+import { WalletProvider } from '../context/WalletProvider';
 import './global.css';
 
 export const metadata = {
@@ -12,7 +15,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <WalletProvider>
+          <AuthProvider>
+            <AgentProvider>{children}</AgentProvider>
+          </AuthProvider>
+        </WalletProvider>
+      </body>
     </html>
   );
 }
