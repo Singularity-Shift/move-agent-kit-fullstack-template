@@ -198,7 +198,7 @@ export const executeAction = async (
       break;
     }
     case 'joule_lend_token': {
-      const args = values as [number, MoveStructId, string, boolean, boolean];
+      const args = values as [number, MoveStructId, string, boolean];
 
       const details = await agent.getTokenDetails(args[1]);
 
@@ -211,7 +211,7 @@ export const executeAction = async (
       break;
     }
     case 'joule_withdraw_token': {
-      const args = values as [number, MoveStructId, string, boolean];
+      const args = values as [number, MoveStructId, string];
 
       const details = await agent.getTokenDetails(args[1]);
 
@@ -225,7 +225,7 @@ export const executeAction = async (
       break;
     }
     case 'joule_borrow_token': {
-      const args = values as [number, MoveStructId, string, boolean];
+      const args = values as [number, MoveStructId, string];
 
       const details = await agent.getTokenDetails(args[1]);
       args[0] = convertAmountFromHumanReadableToOnChain(
@@ -238,7 +238,7 @@ export const executeAction = async (
       break;
     }
     case 'joule_repay_token': {
-      const args = values as [number, MoveStructId, string, boolean];
+      const args = values as [number, MoveStructId, string];
 
       const details = await agent.getTokenDetails(args[1]);
       args[0] = convertAmountFromHumanReadableToOnChain(
