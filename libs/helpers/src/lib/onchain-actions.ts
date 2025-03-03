@@ -74,7 +74,15 @@ export const executeAction = async (
             coinType: mint as MoveStructId,
           });
         }
-        return balance;
+
+        const tokenDetails = await agent.getTokenDetails(mint);
+
+        const convertedBalance = convertAmountFromOnChainToHumanReadable(
+          balance,
+          tokenDetails.decimals || 8
+        );
+
+        return convertedBalance;
       }
       const balance = await agent.aptos.getAccountAPTAmount({
         accountAddress: walletAddress as string,
@@ -250,34 +258,70 @@ export const executeAction = async (
       break;
     }
     case 'joule_get_user_position': {
-      const args = values as [AccountAddress, string];
+      const args = values as [string];
 
-      args[0] = AccountAddress.from(walletAddress as string);
+      const address = AccountAddress.from(walletAddress as string);
 
-      return agent.getUserPosition(...args);
+      return agent.getUserPosition(address, ...args);
     }
     case 'joule_get_user_all_positions': {
       const args = values as [AccountAddress];
 
-      args[0] = agent.account.getAddress();
-      return agent.getUserAllPositions(...args);
+      args[0] = AccountAddress.from(walletAddress as string);
+      const response = await agent.getUserAllPositions(...args);
+
+      return Promise.all(
+        response.map(async (r: any) => {
+          const positions_map = await Promise.all(
+            r.positions_map.data.map(async (position: any) => {
+              const borrow_positions = await Promise.all(
+                position.value.borrow_positions.data.map(async (p: any) => ({
+                  ...p,
+                  value: convertAmountFromOnChainToHumanReadable(
+                    p.value,
+                    (
+                      await agent.getTokenDetails(position.token_id)
+                    )?.decimals || 8
+                  ).toString(),
+                }))
+              );
+
+              const lend_positions = await Promise.all(
+                position.value.lend_positions.data.map(async (p: any) => ({
+                  ...p,
+                  value: convertAmountFromOnChainToHumanReadable(
+                    p.value,
+                    (
+                      await agent.getTokenDetails(position.token_id)
+                    )?.decimals || 8
+                  ).toString(),
+                }))
+              );
+
+              return { ...position, borrow_positions, lend_positions };
+            })
+          );
+
+          return { ...r, positions_map };
+        })
+      );
     }
     case 'amnis_stake': {
-      const args = values as [AccountAddress, number];
+      const args = values as [number];
 
-      args[0] = agent.account.getAddress();
-      args[1] = convertAmountFromHumanReadableToOnChain(args[1], 8);
+      const address = agent.account.getAddress();
+      args[0] = convertAmountFromHumanReadableToOnChain(args[0], 8);
 
-      await agent.stakeTokensWithAmnis(...args);
+      await agent.stakeTokensWithAmnis(address, ...args);
       break;
     }
     case 'amnis_withdraw_stake': {
-      const args = values as [AccountAddress, number];
+      const args = values as [number];
 
-      args[0] = agent.account.getAddress();
-      args[1] = convertAmountFromHumanReadableToOnChain(args[1], 8);
+      const address = agent.account.getAddress();
+      args[0] = convertAmountFromHumanReadableToOnChain(args[0], 8);
 
-      await agent.withdrawStakeFromAmnis(...args);
+      await agent.withdrawStakeFromAmnis(address, ...args);
       break;
     }
     case 'aries_borrow': {
