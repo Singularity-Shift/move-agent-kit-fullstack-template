@@ -22,6 +22,7 @@ export class AptosOnchainController {
       'aptos_token_price',
       'joule_get_user_position',
       'joule_get_user_all_positions',
+      'emojicoin_get_market',
     ];
 
     const actions = await this.aptosOnchainService.getAction(actionDto.prompt);

@@ -30,6 +30,14 @@ OPENAI_API_KEY=your_openai_api_key
 
 # PANORA API KEY Configuration
 PANORA_API_KEY=your_panora_api_key
+
+# EMOJICOIN FUN CONFIG
+NEXT_PUBLIC_APTOS_NETWORK=mainnet
+NEXT_PUBLIC_MODULE_ADDRESS="0xface729284ae5729100b3a9ad7f7cc025ea09739cd6e7252aff0beb53619cafe"
+NEXT_PUBLIC_REWARDS_MODULE_ADDRESS="0xbabe32dbe1cb44c30363894da9f49957d6e2b94a06f2fc5c20a9d1b9e54cface"
+NEXT_PUBLIC_INTEGRATOR_ADDRESS="0x99994f5124fa5cc95538217780cbfc01e4c4f842dfcc453890755b2ce4779999"
+NEXT_PUBLIC_ARENA_MODULE_ADDRESS="0x0" # Emojicoin arena is not on mainnet yet.
+NEXT_PUBLIC_INTEGRATOR_FEE_RATE_BPS="100"
 ```
 
 Replace `your_jwt_secret_key`, `your_openai_api_key` and `your_panora_api_key` with your actual secret key and API key.

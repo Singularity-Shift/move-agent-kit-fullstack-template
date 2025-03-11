@@ -10,6 +10,8 @@ import {
   parseFungibleAssetAddressToWrappedAssetAddress,
 } from 'move-agent-kit-fullstack';
 
+import type { SymbolEmoji } from 'move-agent-kit-fullstack';
+
 export const executeAction = async (
   name: string,
   values: any[],
@@ -384,6 +386,47 @@ export const executeAction = async (
 
       await agent.swapWithPanora(...args);
       break;
+    }
+    case 'emojicoin_provide_liquidity': {
+      const args = values as [SymbolEmoji[], number];
+
+      args[1] = convertAmountFromHumanReadableToOnChain(args[1], 8);
+
+      await agent.provideLiquidityEmojicoin(...args);
+      break;
+    }
+    case 'emojicoin_remove_liquidity': {
+      const args = values as [SymbolEmoji[], number];
+
+      args[1] = convertAmountFromHumanReadableToOnChain(args[1], 8);
+
+      await agent.removeLiquidityEmojicoin(...args);
+      break;
+    }
+    case 'emojicoin_register_market': {
+      const args = values as [SymbolEmoji[]];
+
+      await agent.registerMarketEmojicoin(...args);
+
+      break;
+    }
+    case 'emojicoin_swap': {
+      const args = values as [SymbolEmoji[], number, boolean];
+
+      args[1] = convertAmountFromHumanReadableToOnChain(args[1], 8);
+
+      await agent.swapEmojicoins(...args);
+
+      break;
+    }
+    case 'emojicoin_get_market': {
+      const args = values as [SymbolEmoji[]];
+
+      if (typeof args[0] === 'string') {
+        args[0] = [args[0]] as any;
+      }
+
+      return agent.getMarketEmojicoin(...args);
     }
     default:
       return;

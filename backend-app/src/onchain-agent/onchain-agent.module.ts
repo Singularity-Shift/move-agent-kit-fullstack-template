@@ -63,6 +63,11 @@ export const onchainAgentProvider = {
         'aries_withdraw',
         'aries_create_profile',
         'panora_aggregator_swap',
+        'emojicoin_get_market',
+        'emojicoin_provide_liquidity',
+        'emojicoin_register_market',
+        'emojicoin_remove_liquidity',
+        'emojicoin_swap',
       ],
     });
 
