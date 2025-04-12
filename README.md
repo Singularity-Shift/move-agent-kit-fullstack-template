@@ -38,6 +38,10 @@ NEXT_PUBLIC_REWARDS_MODULE_ADDRESS="0xbabe32dbe1cb44c30363894da9f49957d6e2b94a06
 NEXT_PUBLIC_INTEGRATOR_ADDRESS="0x99994f5124fa5cc95538217780cbfc01e4c4f842dfcc453890755b2ce4779999"
 NEXT_PUBLIC_ARENA_MODULE_ADDRESS="0x0" # Emojicoin arena is not on mainnet yet.
 NEXT_PUBLIC_INTEGRATOR_FEE_RATE_BPS="100"
+
+// OPTIONAL
+INTEGRATOR_FEE_ADDRESS=[YOUR ADDRESS]
+INTEGRATOR_FEE_PORCENTAGE="1" // Cannot be more than 2
 ```
 
 Replace `your_jwt_secret_key`, `your_openai_api_key` and `your_panora_api_key` with your actual secret key and API key.
