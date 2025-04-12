@@ -55,13 +55,13 @@ Replace `your_jwt_secret_key`, `your_openai_api_key` and `your_panora_api_key` w
 2. Start the backend application:
 
    ```bash
-   npx nx serve backend-app
+   npx nx run backend-app:serve
    ```
 
 3. Start the frontend application:
 
    ```bash
-   npx nx dev frontend-app
+   npx nx run frontend-app:dev
    ```
 
 ## Building the Libraries

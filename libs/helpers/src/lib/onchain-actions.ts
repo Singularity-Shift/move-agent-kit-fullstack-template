@@ -387,6 +387,11 @@ export const executeAction = async (
       await agent.swapWithPanora(...args);
       break;
     }
+    case 'panora_aggregator_list': {
+      const args = values as [string, boolean, string];
+
+      return agent.listWithPanora(...args);
+    }
     case 'emojicoin_provide_liquidity': {
       const args = values as [SymbolEmoji[], number];
 
