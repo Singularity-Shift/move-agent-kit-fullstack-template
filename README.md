@@ -41,9 +41,9 @@ NEXT_PUBLIC_INTEGRATOR_FEE_RATE_BPS="100"
 AGENT_CLIENT_MODE=true
 
 // OPTIONAL
-INTEGRATOR_FEE_ADDRESS=[YOUR ADDRESS]
-INTEGRATOR_FEE_PORCENTAGE="1" // Cannot be more than 2
-EMOJI_INTEGRATOR=[YOUR ADDRESS]
+INTEGRATOR_FEE_PORCENTAGE=1 // Integration fees to collect
+INTEGRATOR_FEE_ADDRESS="0x3212ed354e3d5b17ed6e3f7e8fb3066325b54be80d61d0d5d01dbc23d95f34d5" // Integration address to collect for Panora
+EMOJI_INTEGRATOR="0x3212ed354e3d5b17ed6e3f7e8fb3066325b54be80d61d0d5d01dbc23d95f34d5" // Integration address to collect for Emojicoin
 ```
 
 Replace `your_jwt_secret_key`, `your_openai_api_key` and `your_panora_api_key` with your actual secret key and API key.
