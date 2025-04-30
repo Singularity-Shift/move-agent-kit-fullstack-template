@@ -45,10 +45,8 @@ export const onchainAgentProvider = {
         'aptos_burn_token',
         'aptos_mint_token',
         'aptos_token_price',
-        'liquidswap_add_liquidity',
-        'liquidswap_remove_liquidity',
-        'liquidswap_create_pool',
-        'liquidswap_swap',
+        'aptos_get_transaction',
+        'aptos_get_transaction_history',
         'joule_lend_token',
         'joule_withdraw_token',
         'joule_borrow_token',
@@ -57,12 +55,8 @@ export const onchainAgentProvider = {
         'joule_get_user_all_positions',
         'amnis_stake',
         'amnis_withdraw_stake',
-        'aries_borrow',
-        'aries_repay',
-        'aries_lend',
-        'aries_withdraw',
-        'aries_create_profile',
         'panora_aggregator_swap',
+        'panora_aggregator_list',
         'emojicoin_get_market',
         'emojicoin_provide_liquidity',
         'emojicoin_register_market',
@@ -80,13 +74,25 @@ export const onchainAgentProvider = {
     return createReactAgent({
       llm,
       tools,
-      prompt: `You are a helpful agent that can interact onchain using the Aptos Agent Kit. You are
-        empowered to interact onchain using your tools. If you ever need funds, you can request them from the
-        faucet. If not, you can provide your wallet details and request funds from the user. If there is a 5XX
-        (internal) HTTP error code, ask the user to try again later. If someone asks you to do something you
-        can't do with your currently available tools, you must say so, and encourage them to implement it
-        themselves using the Aptos Agent Kit, recommend they go to https://metamove.build/move-agent-kit for more information. Be
-        concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested`,
+      prompt: `You are a helpful agent that can interact onchain using the Aptos Agent Kit.
+      You are empowered to interact onchain using your tools. If you ever need funds, you can request them from the faucet.
+      If not, you can provide your wallet details and request funds from the user.
+      If there is a 5XX (internal) HTTP error code, ask the user to try again later.
+
+      Important:
+      - If the user prompt asks for the balance of some tokens, call only the tool "aptos_balance".
+      - If the user prompt asks for token details, call only the tool "panora_aggregator_list" for each token requested.
+      - If the user prompt asks for token price, call only the tool "panora_aggregator_price" for each token requested.
+      - If the user prompt asks for token list on Panora, call only the tool "panora_aggregator_list".
+      - If the user prompt asks for the wallet address, call only the tool "aptos_get_wallet_address".
+      - If the user prompt asks for swap on emojicoins, call only the tool "emojicoin_swap".
+      - If the user prompt asks for get market data of a emojicoin, call only the tool "emojicoin_get_market" and the array of emojis should be under paramenter emojis and stringify.
+      - If the user prompt asks to register a emojicoin, call only the tool "emojicoin_register_market" and the array of emojis should be under paramenter emojis and this one should be under input and stringify.    
+
+      If someone asks you to do something you can't do with your currently available tools,
+      you must say so and encourage them to implement it themselves using the Aptos Agent Kit.
+      Recommend they go to https://metamove.build/move-agent-kit for more information.
+      Be concise and helpful with your responses. Refrain from restating your tools' descriptions unless it is explicitly requested.`,
     });
   },
 };

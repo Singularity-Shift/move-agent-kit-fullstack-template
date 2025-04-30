@@ -1,7 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AptosOnchainService } from './aptos-onchain.service';
 import { ActionsDto } from './dto/actions.dto';
-import { GetActionDto } from './dto/get-action.dto';
 import { ToolsNameList } from 'move-agent-kit-fullstack';
 import { UserAuth } from '../auth/auth.decorator';
 import { IUserAuth } from 'helpers';
@@ -20,27 +19,25 @@ export class AptosOnchainController {
       'aptos_token_details',
       'aptos_balance',
       'aptos_token_price',
+      'aptos_get_transaction',
+      'aptos_get_transaction_history',
       'joule_get_user_position',
       'joule_get_user_all_positions',
       'emojicoin_get_market',
       'panora_aggregator_list',
+      'panora_aggregator_swap',
     ];
 
     const actions = await this.aptosOnchainService.getAction(actionDto.prompt);
 
-    const actionsFormated = actions.map(GetActionDto.fromJson);
-
     if (
-      actionsFormated.some((action) =>
-        actionsWithResponses.includes(action.name)
+      actions.some((action) =>
+        actionsWithResponses.includes(action.name as ToolsNameList)
       )
     ) {
-      return this.aptosOnchainService.getResponses(
-        actionsFormated,
-        userAuth.address
-      );
+      return this.aptosOnchainService.getResponses(actions, userAuth.address);
     }
 
-    return actionsFormated;
+    return actions;
   }
 }

@@ -43,6 +43,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!connected) return;
 
     try {
+      let publicKey;
+      let signature;
+
       const messageResp = await signMessage({
         message:
           'You are interacting with move agent kit example. Please sign in.',
@@ -58,16 +61,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           Object.values((messageResp.signature as any).data.data)
         );
 
-        messageResp.signature = Buffer.from(dataSignature).toString(
-          'hex'
-        ) as any;
+        signature = Buffer.from(dataSignature).toString('hex') as any;
+      } else if (
+        (messageResp.signature as any)?.signature?.ephemeralSignature
+      ) {
+        signature = (messageResp.signature as any).signature.ephemeralSignature
+          .signature;
+      }
+
+      if ((messageResp.signature as any)?.signature) {
+        publicKey = (
+          messageResp.signature as any
+        ).signature.ephemeralPublicKey.publicKey.toString();
       }
 
       const payload: IAuth = {
         message: messageResp.fullMessage,
-        signature: `${messageResp.signature}`,
-        address: account?.address.toString() as string,
-        publicKey: account?.publicKey.toString() as string,
+        signature: `${signature || messageResp.signature}`,
+        address: account?.address.toString() as `0x${string}}`,
+        publicKey: publicKey || (account?.publicKey.toString() as string),
       };
 
       const response = await backend.post('/auth/login', { ...payload });

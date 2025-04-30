@@ -38,10 +38,12 @@ NEXT_PUBLIC_REWARDS_MODULE_ADDRESS="0xbabe32dbe1cb44c30363894da9f49957d6e2b94a06
 NEXT_PUBLIC_INTEGRATOR_ADDRESS="0x99994f5124fa5cc95538217780cbfc01e4c4f842dfcc453890755b2ce4779999"
 NEXT_PUBLIC_ARENA_MODULE_ADDRESS="0x0" # Emojicoin arena is not on mainnet yet.
 NEXT_PUBLIC_INTEGRATOR_FEE_RATE_BPS="100"
+AGENT_CLIENT_MODE=true
 
 // OPTIONAL
 INTEGRATOR_FEE_ADDRESS=[YOUR ADDRESS]
 INTEGRATOR_FEE_PORCENTAGE="1" // Cannot be more than 2
+EMOJI_INTEGRATOR=[YOUR ADDRESS]
 ```
 
 Replace `your_jwt_secret_key`, `your_openai_api_key` and `your_panora_api_key` with your actual secret key and API key.
@@ -81,3 +83,4 @@ npx nx build helpers
 - Ensure that the `.env` file is correctly configured with all necessary environment variables before starting the applications.
 - The backend server will run on the port specified in the `BACKEND_PORT` environment variable.
 - The frontend application will typically run on port 3000 by default, but this can be configured in the `next.config.js` file if needed.
+- Check [Move Agent Kit Fullstack](https://github.com/Singularity-Shift/move-agent-kit-fullstack) readme for documentation

@@ -4,11 +4,7 @@ import {
   convertAmountFromOnChainToHumanReadable,
   MoveStructId,
 } from '@aptos-labs/ts-sdk';
-import {
-  AgentRuntime,
-  getTokenByTokenName,
-  parseFungibleAssetAddressToWrappedAssetAddress,
-} from 'move-agent-kit-fullstack';
+import { AgentRuntime } from 'move-agent-kit-fullstack';
 
 import type { SymbolEmoji } from 'move-agent-kit-fullstack';
 
@@ -31,6 +27,28 @@ export const executeAction = async (
       await agent.transferTokens(...args);
 
       break;
+    }
+    case 'aptos_get_transaction': {
+      const args = values as [string];
+
+      const transaction = await agent.aptos.getTransactionByHash({
+        transactionHash: args[0],
+      });
+
+      return transaction;
+    }
+    case 'aptos_get_transaction_history': {
+      const args = values as [number, number];
+
+      const transactions = await agent.aptos.getAccountTransactions({
+        options: {
+          offset: args[0],
+          limit: args[1],
+        },
+        accountAddress: walletAddress as string,
+      });
+
+      return transactions;
     }
     case 'aptos_create_token': {
       const args = values as [string, string, string, string];
@@ -111,101 +129,6 @@ export const executeAction = async (
       const args = values as [string];
 
       return agent.getTokenDetails(...args);
-    }
-
-    case 'liquidswap_swap': {
-      const args = values as [MoveStructId, MoveStructId, number, number];
-
-      const token0 = getTokenByTokenName(args[0]);
-      const token1 = getTokenByTokenName(args[1]);
-
-      if (token0) {
-        args[0] = token0.tokenAddress as MoveStructId;
-      }
-
-      if (token1) {
-        args[1] = token1.tokenAddress as MoveStructId;
-      }
-
-      const details1 = await agent.getTokenDetails(args[0]);
-      const details2 = await agent.getTokenDetails(args[1]);
-
-      args[2] = convertAmountFromHumanReadableToOnChain(
-        args[2],
-        details1.decimals || 8
-      );
-      args[3] = convertAmountFromHumanReadableToOnChain(
-        args[3],
-        details2.decimals || 8
-      );
-
-      await agent.swap(...args);
-      break;
-    }
-    case 'liquidswap_add_liquidity': {
-      const args = values as [MoveStructId, MoveStructId, number, number];
-
-      args[0] = parseFungibleAssetAddressToWrappedAssetAddress(args[0]);
-      args[1] = parseFungibleAssetAddressToWrappedAssetAddress(args[1]);
-
-      const details1 = await agent.getTokenDetails(args[0]);
-      const details2 = await agent.getTokenDetails(args[1]);
-
-      args[2] = convertAmountFromHumanReadableToOnChain(
-        args[2],
-        details1.decimals || 8
-      );
-      args[3] = convertAmountFromHumanReadableToOnChain(
-        args[3],
-        details2.decimals || 8
-      );
-
-      await agent.addLiquidity(...args);
-      break;
-    }
-    case 'liquidswap_remove_liquidity': {
-      const args = values as [
-        MoveStructId,
-        MoveStructId,
-        number,
-        number,
-        number
-      ];
-
-      args[0] = parseFungibleAssetAddressToWrappedAssetAddress(args[0]);
-      args[1] = parseFungibleAssetAddressToWrappedAssetAddress(args[1]);
-
-      if (args[2]) {
-        const details1 = await agent.getTokenDetails(args[0]);
-
-        args[2] = convertAmountFromHumanReadableToOnChain(
-          args[2],
-          details1.decimals
-        );
-      }
-
-      if (args[3]) {
-        const details2 = await agent.getTokenDetails(args[1]);
-
-        args[3] = convertAmountFromHumanReadableToOnChain(
-          args[3],
-          details2.decimals
-        );
-      }
-
-      args[4] = convertAmountFromHumanReadableToOnChain(args[4], 6);
-
-      await agent.removeLiquidity(...args);
-      break;
-    }
-    case 'liquidswap_create_pool': {
-      const args = values as [MoveStructId, MoveStructId];
-
-      args[0] = parseFungibleAssetAddressToWrappedAssetAddress(args[0]);
-      args[1] = parseFungibleAssetAddressToWrappedAssetAddress(args[1]);
-
-      await agent.createPool(...args);
-      break;
     }
     case 'joule_lend_token': {
       const args = values as [number, MoveStructId, string, boolean];
@@ -324,61 +247,6 @@ export const executeAction = async (
       args[0] = convertAmountFromHumanReadableToOnChain(args[0], 8);
 
       await agent.withdrawStakeFromAmnis(address, ...args);
-      break;
-    }
-    case 'aries_borrow': {
-      const args = values as [MoveStructId, number];
-
-      const details = await agent.getTokenDetails(args[0]);
-      args[1] = convertAmountFromHumanReadableToOnChain(
-        args[1],
-        details.decimals || 8
-      );
-
-      await agent.borrowAriesToken(...args);
-
-      break;
-    }
-    case 'aries_repay': {
-      const args = values as [MoveStructId, number];
-
-      const details = await agent.getTokenDetails(args[0]);
-      args[1] = convertAmountFromHumanReadableToOnChain(
-        args[1],
-        details.decimals || 8
-      );
-
-      await agent.repayAriesToken(...args);
-
-      break;
-    }
-    case 'aries_lend': {
-      const args = values as [MoveStructId, number];
-
-      const details = await agent.getTokenDetails(args[0]);
-      args[1] = convertAmountFromHumanReadableToOnChain(
-        args[1],
-        details.decimals || 8
-      );
-
-      await agent.lendAriesToken(...args);
-
-      break;
-    }
-    case 'aries_withdraw': {
-      const args = values as [MoveStructId, number];
-
-      const details = await agent.getTokenDetails(args[0]);
-      args[1] = convertAmountFromHumanReadableToOnChain(
-        args[1],
-        details.decimals || 8
-      );
-
-      agent.withdrawAriesToken(...args);
-      break;
-    }
-    case 'aries_create_profile': {
-      await agent.createAriesProfile();
       break;
     }
     case 'panora_aggregator_swap': {

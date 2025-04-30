@@ -2,10 +2,15 @@ import { HumanMessage } from '@langchain/core/messages';
 import { CompiledStateGraph, MessagesAnnotation } from '@langchain/langgraph';
 import { createReactAgentAnnotation } from '@langchain/langgraph/dist/prebuilt/react_agent_executor';
 import { Injectable } from '@nestjs/common';
-import { GetActionDto } from './dto/get-action.dto';
 import { Account, Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
-import { AgentRuntime, LocalSigner } from 'move-agent-kit-fullstack';
+import {
+  AgentRuntime,
+  LocalSigner,
+  getSwapDetails,
+} from 'move-agent-kit-fullstack';
 import { executeAction } from 'helpers';
+import { GetActionDto } from './dto/get-action.dto';
+import { ConfigService } from '../config/config.service';
 
 @Injectable()
 export class AptosOnchainService {
@@ -16,7 +21,8 @@ export class AptosOnchainService {
       any,
       typeof MessagesAnnotation.spec,
       ReturnType<typeof createReactAgentAnnotation>['spec']
-    >
+    >,
+    private readonly configService: ConfigService
   ) {}
 
   public async getAction(prompt: string) {
@@ -27,10 +33,11 @@ export class AptosOnchainService {
       { configurable: { thread_id: 'Aptos Agent Kit!' } }
     );
 
-    return result.messages
-      .flatMap((message) => message.additional_kwargs.tool_calls)
-      .filter((tools) => tools?.type === 'function')
-      .map((tool) => tool.function);
+    const contents = result.messages
+      .filter((m) => m.name)
+      .map((m) => JSON.parse(m.content as string));
+
+    return contents;
   }
 
   public async getResponses(actions: GetActionDto[], walletAddress: string) {
@@ -42,19 +49,36 @@ export class AptosOnchainService {
       })
     );
 
-    const agent = new AgentRuntime(signer, aptos);
+    const agent = new AgentRuntime(signer, aptos, {
+      PANORA_API_KEY: this.configService.get<string>('panora.apiKey'),
+    });
 
     const responses = [];
 
-    for (const action of actions) {
-      const response = await executeAction(
-        action.name,
-        action.args,
-        agent,
-        walletAddress
-      );
+    for await (const action of actions) {
+      if (action.name === 'panora_aggregator_swap') {
+        const details = await getSwapDetails(
+          agent,
+          action.args[0],
+          action.args[1],
+          action.args[2],
+          walletAddress
+        );
 
-      responses.push(response);
+        responses.push({
+          ...action,
+          txDetails: details.quotes[0],
+        });
+      } else {
+        const response = await executeAction(
+          action.name,
+          action.args,
+          agent,
+          walletAddress
+        );
+
+        responses.push(response);
+      }
     }
 
     return responses;
